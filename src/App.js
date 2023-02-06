@@ -1,25 +1,50 @@
-import logo from './logo.svg';
-import './App.css';
+import "./App.css"
+import { useState } from "react"
+import { ToDoList } from "./components/ToDoList"
 
 function App() {
+  const [tasks, setTasks] = useState([
+    { id: 101, text: "Workout", completed: false },
+    { id: 102, text: "Morning Coffee", completed: true },
+    { id: 103, text: "Have a shower", completed: false },
+    { id: 104, text: "Breakfast", completed: true },
+  ])
+  const [filter, setFilter] = useState("All")
+  const changeToDoStatus = (id) => {
+    setTasks([
+      ...tasks.map((elm) =>
+        elm.id !== id ? elm : { ...elm, completed: !elm.completed }
+      ),
+    ])
+  }
+  const handleAdd = (text) => {
+    setTasks([{ text, completed: false, id: Date.now() }, ...tasks])
+  }
+  const handleDelete = (id) => {
+    setTasks([...tasks.filter((elm) => elm.id !== id)])
+  }
+  const handleMakeAllActive = () => {
+    setTasks([
+      ...tasks.filter((elm) => {
+        return (elm.completed = false)
+      }),
+      ...tasks,
+    ])
+  }
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    <>
+      <ToDoList
+        items={tasks}
+        onStatusChange={changeToDoStatus}
+        onDelete={handleDelete}
+        onAdd={handleAdd}
+        filter={filter}
+        onFilter={setFilter}
+        onActive={handleMakeAllActive}
+      />
+    </>
+  )
 }
 
-export default App;
+export default App
+
